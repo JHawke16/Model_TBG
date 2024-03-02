@@ -6,8 +6,8 @@ class WeaponFactory:
     @staticmethod
     def create_weapon(weapon_type):
         weapons = {
-            'sword': Weapon('Sword', 10, 4, 10),
-            'claw': Weapon('Claw', 5, 1, 0)
+            'sword': Weapon('Sword', 10, 4, 3, 10),
+            'claw': Weapon('Claw', 5, 1, 1, 0)
 
         }
 

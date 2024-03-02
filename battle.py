@@ -1,30 +1,38 @@
-from player import Player
-from enemy import Enemy
-from weapon_factory import WeaponFactory
-
-p_weapon = WeaponFactory.create_weapon('sword')
-e_weapon = WeaponFactory.create_weapon('claw')
-player = Player(15, 0, 1, p_weapon)
-enemy = Enemy(20, 60, 1, e_weapon)
-
-
 class Battle:
 
-    def battle(self, player, enemy):
-        while player.check_alive() and enemy.check_alive():
-            print('\nPlayer Health:', player.health)
-            print('Enemy Health:', enemy.health)
+    def __init__(self, player, enemy):
+        self.player = player
+        self.enemy = enemy
 
-            choice = input('\nDo you want to attack?\nChoice: ')
-            if choice == 'y':
-                player.take_damage(enemy.attack())
-                if not player.check_alive():
+    def determine_first_strike(self):
+        if self.player.speed > self.enemy.speed:
+            return "player"
+        else:
+            return "enemy"
+
+    def battle_flow(self):
+        first_strike = self.determine_first_strike()
+        print(f"\n{first_strike.capitalize()} strikes first.")
+
+        while self.player.check_alive() and self.enemy.check_alive():
+
+            if first_strike == "player":
+                self.enemy.take_damage(self.player.attack())
+                if not self.enemy.check_alive():
+                    print('Enemy Defeated')
+                    exp = self.enemy.drop_exp()
+                    self.player.gain_exp(exp)
+                    break  # Exit the loop if the enemy is defeated
+
+                first_strike = "enemy"  # Switch turns
+
+            if first_strike == "enemy":
+                self.player.take_damage(self.enemy.attack())
+                if not self.player.check_alive():
                     print('Battle Over')
+                    break  # Exit the loop if the player is defeated
 
-                enemy.take_damage(player.attack())
-                if not enemy.check_alive():
-                    exp = enemy.drop_exp()
-                    player.gain_exp(exp)
+                first_strike = "player"  # Switch turns
 
     def start_battle(self):
-        self.battle(player, enemy)
+        self.battle_flow()

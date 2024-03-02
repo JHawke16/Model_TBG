@@ -1,4 +1,4 @@
-from battle import Battle
+from menu import Menu
 
-battle = Battle()
-battle.start_battle()
+menu = Menu()
+menu.main_menu()
