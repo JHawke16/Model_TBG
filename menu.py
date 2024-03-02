@@ -1,6 +1,7 @@
 class Menu:
 
     def main_menu(self):
+        # Version control for every time code is pushed
         print('Welcome to TBG Alpha V 0.0002')
         print('----------------------------------\n')
         correct = True
@@ -18,6 +19,7 @@ class Menu:
             )
             if choice == '1':
                 print('\nStarting New Game - Moving to Character Creation\n')
+                # import placed here to fix circular import errors
                 from char_creation import CharCreation
                 char_create = CharCreation()
                 player = char_create.char_create()  # Capture the returned player object
@@ -27,3 +29,13 @@ class Menu:
                 game_loop = GameLoop()
                 game_loop.start_game(player)  # Pass the created player into the game loop
                 correct = False
+
+            elif choice == '2':
+                print('\nLoading Saved Game')
+
+            elif choice == '3':
+                print('\nInfo about the Game')
+
+            elif choice == '4':
+                print('\nExiting Game')
+                exit()

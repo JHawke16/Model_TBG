@@ -5,6 +5,7 @@ class Battle:
         self.enemy = enemy
 
     def determine_first_strike(self):
+        # Determining who will get to attack first between player and enemy
         if self.player.speed > self.enemy.speed:
             return "player"
         else:
@@ -15,11 +16,13 @@ class Battle:
         print(f"\n{first_strike.capitalize()} strikes first.")
 
         while self.player.check_alive() and self.enemy.check_alive():
+            # Battle loop will run while either player or enemy are alive
 
             if first_strike == "player":
                 self.enemy.take_damage(self.player.attack())
                 if not self.enemy.check_alive():
                     print('Enemy Defeated')
+                    # Only exp is dropped for now but enemy will also drop gold and items
                     exp = self.enemy.drop_exp()
                     self.player.gain_exp(exp)
                     break  # Exit the loop if the enemy is defeated

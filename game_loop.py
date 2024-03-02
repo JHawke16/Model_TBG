@@ -1,10 +1,9 @@
-from char_creation import CharCreation
 from monster_factory import MonsterFactory
 from battle_factory import BattleFactory
 
 
 class GameLoop:
-
+    # Start of the Game loop calling any battle and story events
     def start_game(self, player):
         # Start tutorial battle
         self.start_tutorial_battle(player)

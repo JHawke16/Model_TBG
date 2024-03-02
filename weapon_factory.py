@@ -7,6 +7,9 @@ class WeaponFactory:
     def create_weapon(weapon_type):
         weapons = {
             'sword': Weapon('Sword', 10, 4, 3, 10),
+            'dagger': Weapon('Dagger', 6, 2, 5, 10),
+            'staff': Weapon('Staff', 3, 5, 15, 10),
+            'club': Weapon('Club', 5, 2, 2, 5),
             'claw': Weapon('Claw', 5, 1, 1, 0)
 
         }

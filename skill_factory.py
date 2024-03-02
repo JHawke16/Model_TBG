@@ -5,10 +5,24 @@ class SkillFactory:
 
     @staticmethod
     def create_skills(skill_types):
+        # Although player classes can start with these skills, they can be given to any enemy as well
         all_skills = {
+            # Starting warrior skills
             'slash': Skills('Slash', 15, 4),
             'swing': Skills('Swing', 12, 3),
             'stab': Skills('Stab', 10, 2),
+            # Starting Rogue skills
+            'backstab': Skills('Backstab', 15, 2),
+            'silent_strike': Skills('Silent Strike', 12, 1),
+            'sap': Skills('Sap', 10, 0),
+            # Starting Mage skills
+            'fireball': Skills('Fireball', 20, 5),
+            'flames': Skills('Flames', 15, 3),
+            'magma': Skills('Magma', 12, 2),
+            # Starting Commoner Skills
+            'bash': Skills('Bash', 7, 1),
+            'whack': Skills('Whack', 7, 1),
+            # Basic Enemy skills
             'bite': Skills('Bite', 7, 1)
         }
 
