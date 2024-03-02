@@ -5,4 +5,5 @@ class Weapon:
         self.damage = damage
         self.defense = defense
         self.energy = energy
+        self.max_energy = energy
         self.value = value

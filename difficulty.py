@@ -10,3 +10,7 @@ class Difficulty:
     def exp_scaler(self, exp):
         scaled_exp = exp + ((self.value - 1) * exp * 0.3)
         return scaled_exp
+
+    def gold_scaler(self, gold):
+        scaled_gold = gold + ((self.value - 1) * gold * 0.2)
+        return scaled_gold

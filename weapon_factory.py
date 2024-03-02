@@ -6,11 +6,12 @@ class WeaponFactory:
     @staticmethod
     def create_weapon(weapon_type):
         weapons = {
-            'sword': Weapon('Sword', 10, 4, 3, 10),
-            'dagger': Weapon('Dagger', 6, 2, 5, 10),
-            'staff': Weapon('Staff', 3, 5, 15, 10),
+            'sword': Weapon('Sword', 10, 4, 6, 10),
+            'dagger': Weapon('Dagger', 6, 2, 10, 10),
+            'staff': Weapon('Staff', 3, 5, 25, 10),
             'club': Weapon('Club', 5, 2, 2, 5),
-            'claw': Weapon('Claw', 5, 1, 1, 0)
+            'claw': Weapon('Claw', 5, 1, 1, 0),
+            'swipe': Weapon('Swipe', 10, 2, 3, 0)
 
         }
 
