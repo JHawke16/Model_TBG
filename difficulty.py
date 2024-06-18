@@ -14,3 +14,7 @@ class Difficulty:
     def gold_scaler(self, gold):
         scaled_gold = gold + ((self.value - 1) * gold * 0.2)
         return scaled_gold
+
+    def health_scaler(self, health):
+        scaled_health = health + ((self.value - 1) * health * 0.3)
+        return scaled_health

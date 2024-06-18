@@ -68,30 +68,24 @@ class Player:
 
     def gain_exp(self, exp):
         self.base_exp += exp
-        self.reset_stats()
         self.level_up()
 
     def level_up(self):
-        # Level up logic is after the required exp for the next level is met, the player's level
-        # increases and any remaining exp is carried over towards the next level
         check_level = self.required_exp - self.base_exp
         while self.base_exp >= self.required_exp:
-            # Actual values increases in level up
             self.level += 1
             self.speed += 2
-            # Next level exp calculations
             carry_over = self.base_exp - self.required_exp
             self.base_exp = carry_over
             self.required_exp = self.level * 10
             self.max_health = self.health + ((self.level - 1) * 5)
             self.reset_stats()
             check_level = self.required_exp - self.base_exp
-        # Stats being displayed after exp is gained
         print(f'\n{self.name} Level: {self.level}')
         print(f'Current exp: {self.base_exp}')
         print(f'Exp required for level up: {check_level}')
 
     def reset_stats(self):
         self.health = self.max_health
-        if self.weapon:  # Check if the player has a weapon equipped
+        if self.weapon:
             self.weapon.energy = self.weapon.max_energy

@@ -1,3 +1,4 @@
+from random import choice
 from difficulty import Difficulty
 
 
@@ -21,6 +22,28 @@ class Enemy:
             return damage
         else:
             return 0
+
+    def skill_attack(self):
+        if self.skills and self.weapon:
+            selected_skill = choice(self.skills)  # Randomly choose a skill
+            if self.weapon.energy >= selected_skill.energy:
+                self.weapon.energy -= selected_skill.energy
+                damage = round(self.difficulty.damage_scaler(selected_skill.damage))
+                print(
+                    f'\n{self.name} uses {selected_skill.name} for {damage} damage, costing {selected_skill.energy} energy')
+                return damage
+            else:
+                print(f'\n{self.name} does not have enough energy to use any skill')
+                return 0
+        return 0
+
+    def defend(self):
+        print(f'{self.name} is defending')
+        return 'defend'
+
+    def flee(self):
+        print(f'{self.name} attempts to flee')
+        return 'flee'
 
     def take_damage(self, damage):
         self.health -= damage

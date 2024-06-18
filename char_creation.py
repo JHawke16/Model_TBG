@@ -35,7 +35,7 @@ class CharCreation:
                 'weapon': 'club',
                 'skills': ['bash', 'whack']
             }
-            # Add configurations for any new starting classes here
+            # Configurations for any new starting classes here
         }
 
         print('\nWelcome to Character Creation')
@@ -65,3 +65,4 @@ class CharCreation:
                     print('Returning to character selection')
             else:
                 print('Invalid choice, please select a valid class.')
+

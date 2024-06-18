@@ -2,7 +2,7 @@ class Menu:
 
     def main_menu(self):
         # Version control for every time code is pushed
-        print('Welcome to TBG Alpha Version 0.003')
+        print('Welcome to TBG Alpha Version 0.004')
         print('----------------------------------\n')
         correct = True
         while correct:

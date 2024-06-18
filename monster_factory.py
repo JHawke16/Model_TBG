@@ -22,4 +22,4 @@ class MonsterFactory:
         if monster_type in basic_monster:
             return basic_monster[monster_type]
         else:
-            raise ValueError(f'Unknown weapon type: {monster_type}\nCheck if forgot to add the skill as a list')
+            raise ValueError(f'Unknown monster type: {monster_type}\nCheck if forgot to add the skill as a list')

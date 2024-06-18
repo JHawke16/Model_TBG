@@ -22,7 +22,7 @@ class GameLoop:
         self.start_tutorial_battle(player)
 
     def start_tutorial_battle(self, player):
-        # Initialise multiple enemies
+        # Initialize multiple enemies
         enemy1 = MonsterFactory.create_basic_monster('wolf', self.difficulty)
         enemy2 = MonsterFactory.create_basic_monster('bear', self.difficulty)
 
@@ -32,4 +32,5 @@ class GameLoop:
         # Create and start the battle with the player and the list of enemies
         battle = BattleFactory.create_battle(player, enemies)
         battle.start_battle()
+
 
