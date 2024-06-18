@@ -26,7 +26,7 @@ class CharCreation:
                 'health': 15,
                 'speed': 7,
                 'weapon': 'staff',
-                'skills': ['fireball', 'flames', 'magma']
+                'skills': ['fireball', 'flames', 'magma', 'blaze']
             },
             '4': {
                 'class_name': 'Commoner',

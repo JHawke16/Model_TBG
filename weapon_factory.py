@@ -11,7 +11,7 @@ class WeaponFactory:
             'staff': Weapon('Staff', 3, 5, 25, 10),
             'club': Weapon('Club', 5, 2, 2, 5),
             'claw': Weapon('Claw', 5, 1, 1, 0),
-            'swipe': Weapon('Swipe', 10, 2, 3, 0)
+            'swipe': Weapon('Swipe', 8, 2, 3, 0)
 
         }
 
