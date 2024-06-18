@@ -1,3 +1,6 @@
+import random
+
+
 class Player:
 
     def __init__(self, name, health, base_exp, level, gold, speed, weapon=None, skills=None):
@@ -11,6 +14,7 @@ class Player:
         self.speed = speed
         self.weapon = weapon
         self.skills = skills if skills else []
+        self.is_defending = False  # Attribute to track defending state
 
     def attack(self):
         if self.weapon:
@@ -55,6 +59,9 @@ class Player:
                 return None
 
     def take_damage(self, damage):
+        if self.is_defending and self.weapon:
+            damage -= self.weapon.defense  # Apply defense reduction
+            damage = max(damage, 0)  # Ensure damage doesn't go below 0
         self.health -= damage
         print(f'\n{self.name} Remaining Health: {self.health}')
         self.check_alive()
@@ -81,11 +88,25 @@ class Player:
             self.max_health = self.health + ((self.level - 1) * 5)
             self.reset_stats()
             check_level = self.required_exp - self.base_exp
+            print(f'{self.name} Levels up!')
         print(f'\n{self.name} Level: {self.level}')
         print(f'Current exp: {self.base_exp}')
-        print(f'Exp required for level up: {check_level}')
+        print(f'Exp required for level up: {check_level}\n')
 
     def reset_stats(self):
         self.health = self.max_health
+        self.is_defending = False  # Reset defending state
         if self.weapon:
             self.weapon.energy = self.weapon.max_energy
+
+    def defend(self):
+        self.is_defending = True
+        print(f'{self.name} is defending, reducing incoming damage by {self.weapon.defense}')
+
+    def flee(self):
+        if random.random() < 0.2:  # 20% chance to flee successfully
+            print(f'{self.name} successfully flees the battle!')
+            return True
+        else:
+            print(f'{self.name} failed to flee.')
+            return False

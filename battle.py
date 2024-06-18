@@ -1,4 +1,6 @@
 from random import choice
+import random
+
 
 class Battle:
 
@@ -12,9 +14,11 @@ class Battle:
         return combatants
 
     def battle_flow(self):
-        print("\nBattle starts!")
+        print("\n=======================")
+        print("     Battle starts!    ")
+        print("=======================")
         enemy_names = [enemy.name for enemy in self.enemies if enemy.check_alive()]
-        print(f"\nEnemies entering the battle: {', '.join(enemy_names)}")
+        print(f"\nEnemies entering the battle: {', '.join(enemy_names)}\n")
 
         while self.player.check_alive() and any(enemy.check_alive() for enemy in self.enemies):
             for combatant_type, combatant in self.get_action_order():
@@ -24,19 +28,22 @@ class Battle:
                     self.enemy_action(combatant)
 
                 if not self.player.check_alive():
-                    print('Battle Over. You were defeated.')
+                    print("\n=======================")
+                    print("    Battle Over. You were defeated.")
+                    print("=======================")
                     return
 
             self.handle_defeated_enemies()
 
-        print('Battle Over. All enemies defeated!')
-        # Reset player stats at the end of the battle
+        print("\n=======================")
+        print(" Battle Over. All enemies defeated!")
+        print("=======================")
         self.player.reset_stats()
 
     def player_action(self, player):
         valid_action_taken = False
         while not valid_action_taken:
-            print('\nChoose an action:\n1. Attack\n2. Skills\n3. Defend\n4. Flee\n')
+            print('Choose an action:\n1. Attack\n2. Skills\n3. Defend\n4. Flee\n')
             p_choice = input('Choice: ')
 
             if p_choice in ['1', '2']:  # Attack or Skills
@@ -57,7 +64,8 @@ class Battle:
                 player.defend()
                 valid_action_taken = True
             elif p_choice == '4':  # Flee
-                player.flee()
+                if player.flee():
+                    return  # End the battle if the player successfully flees
                 valid_action_taken = True
 
     def select_enemy_target(self):
@@ -72,12 +80,17 @@ class Battle:
             else:
                 print("Invalid target. Please select a valid enemy.")
         except ValueError:
-            print("Please enter a number.")
+            print("Please enter a number.\n")
         return None
 
     def enemy_action(self, enemy):
         if self.player.check_alive():
-            action_choice = choice(['attack', 'skill_attack', 'defend', 'flee'])
+            if enemy.health / enemy.max_health < 0.15 and random.random() < 0.2:  # 15% health and 20% flee chance
+                if enemy.flee():
+                    self.enemies.remove(enemy)
+                    return
+
+            action_choice = choice(['attack', 'skill_attack', 'defend'])
             if action_choice == 'attack':
                 damage = enemy.attack()
                 self.player.take_damage(damage)
@@ -86,8 +99,6 @@ class Battle:
                 self.player.take_damage(skill_damage)
             elif action_choice == 'defend':
                 enemy.defend()
-            elif action_choice == 'flee':
-                enemy.flee()
             if not self.player.check_alive():
                 print('Battle Over')
 

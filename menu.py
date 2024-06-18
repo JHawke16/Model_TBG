@@ -2,21 +2,23 @@ class Menu:
 
     def main_menu(self):
         # Version control for every time code is pushed
-        print('Welcome to TBG Alpha Version 0.004')
-        print('----------------------------------\n')
+        print('===================================')
+        print('     Welcome to TBG Alpha Version 0.0041')
+        print('===================================\n')
+
         correct = True
         while correct:
-            print('----------')
-            print('Main Menu')
-            print('----------\n')
-            choice = input(
-                'Please select an option below (Enter the number value to make your choice)'
-                '\n1. New Game'
-                '\n2. Load Game'
-                '\n3. Information'
-                '\n4. Exit'
-                '\nChoice: '
-            )
+            print('=======================')
+            print('        Main Menu      ')
+            print('=======================\n')
+            print('1. New Game')
+            print('2. Load Game')
+            print('3. Information')
+            print('4. Exit\n')
+
+            choice = input('Please select an option (Enter the number value): ')
+            print('-----------------------')
+
             if choice == '1':
                 print('\nStarting New Game - Moving to Character Creation\n')
                 # import placed here to fix circular import errors
@@ -31,11 +33,16 @@ class Menu:
                 correct = False
 
             elif choice == '2':
-                print('\nLoading Saved Game')
+                print('\nLoading Saved Game\n')
+                # Placeholder for load game functionality
+                print('Feature not implemented yet.')
 
             elif choice == '3':
-                print('\nInfo about the Game')
+                print('\nGame Information\n')
 
             elif choice == '4':
-                print('\nExiting Game')
+                print('\nExiting Game\n')
                 exit()
+
+            else:
+                print('\nInvalid choice, please select a valid option.\n')

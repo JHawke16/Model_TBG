@@ -1,3 +1,4 @@
+import random
 from random import choice
 from difficulty import Difficulty
 
@@ -7,6 +8,7 @@ class Enemy:
     def __init__(self, name, health, exp, level, speed, gold, weapon=None, skills=None, difficulty=None):
         self.name = name
         self.health = health
+        self.max_health = health  # Setting max_health equal to initial health
         self.exp = exp
         self.level = level
         self.speed = speed
@@ -14,6 +16,7 @@ class Enemy:
         self.weapon = weapon
         self.skills = skills if skills else []
         self.difficulty = difficulty if difficulty else Difficulty(1)  # Default to difficulty level 1
+        self.is_defending = False  # Attribute to track defending state
 
     def attack(self):
         if self.weapon:
@@ -33,19 +36,14 @@ class Enemy:
                     f'\n{self.name} uses {selected_skill.name} for {damage} damage, costing {selected_skill.energy} energy')
                 return damage
             else:
-                print(f'\n{self.name} does not have enough energy to use any skill')
-                return 0
-        return 0
-
-    def defend(self):
-        print(f'{self.name} is defending')
-        return 'defend'
-
-    def flee(self):
-        print(f'{self.name} attempts to flee')
-        return 'flee'
+                print(f'\n{self.name} does not have enough energy to use any skill, performing a normal attack instead.')
+                return self.attack()
+        return self.attack()  # If no skills are available, perform a normal attack
 
     def take_damage(self, damage):
+        if self.is_defending and self.weapon:
+            damage -= self.weapon.defense  # Apply defense reduction
+            damage = max(damage, 0)  # Ensure damage doesn't go below 0
         self.health -= damage
         print(f'\n{self.name} Remaining Health: {self.health}\n')
         self.check_alive()
@@ -64,3 +62,15 @@ class Enemy:
         dropped_exp = round(self.difficulty.exp_scaler(self.exp))
         print(f'{self.name} dropped {dropped_exp} exp')
         return dropped_exp
+
+    def defend(self):
+        self.is_defending = True
+        print(f'{self.name} is defending, reducing incoming damage by {self.weapon.defense}')
+
+    def flee(self):
+        if self.health / self.max_health < 0.15 and random.random() < 0.2:  # 15% health and 20% flee chance
+            print(f'{self.name} successfully flees the battle!')
+            return True
+        else:
+            print(f'{self.name} failed to flee.')
+            return False
