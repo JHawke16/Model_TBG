@@ -6,7 +6,7 @@ from difficulty import Difficulty
 class GameLoop:
 
     def __init__(self):
-        self.difficulty = Difficulty(1)  # Default difficulty level
+        self.difficulty = Difficulty(3)  # Default difficulty level
 
     def get_difficulty(self):
         return self.difficulty.value
@@ -30,7 +30,5 @@ class GameLoop:
         enemies = [enemy1, enemy2]
 
         # Create and start the battle with the player and the list of enemies
-        battle = BattleFactory.create_battle(player, enemies)
+        battle = BattleFactory.create_battle(player, enemies, self.difficulty)
         battle.start_battle()
-
-

@@ -1,6 +1,5 @@
 import random
 
-
 class Player:
 
     def __init__(self, name, health, base_exp, level, gold, speed, weapon=None, skills=None):
@@ -79,7 +78,6 @@ class Player:
         self.level_up()
 
     def level_up(self):
-        check_level = self.required_exp - self.base_exp
         while self.base_exp >= self.required_exp:
             self.level += 1
             self.speed += 2
@@ -90,6 +88,7 @@ class Player:
             self.health = self.max_health  # Set current health to max health
             print(f'{self.name} Levels up!')
             print(f'{self.name} Max Health: {self.max_health} HP')
+        check_level = self.required_exp - self.base_exp
         print(f'\n{self.name} Level: {self.level}')
         print(f'Current exp: {self.base_exp}')
         print(f'Exp required for level up: {check_level}\n')
@@ -111,4 +110,3 @@ class Player:
         else:
             print(f'{self.name} failed to flee.')
             return False
-

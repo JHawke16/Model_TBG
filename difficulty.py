@@ -7,6 +7,10 @@ class Difficulty:
         scaled_damage = damage + ((self.value - 1) * damage * 0.3)
         return scaled_damage
 
+    def skill_damage_scaler(self, damage):
+        scaled_damage = damage + ((self.value - 1) * damage * 0.2)
+        return scaled_damage
+
     def exp_scaler(self, exp):
         scaled_exp = exp + ((self.value - 1) * exp * 0.3)
         return scaled_exp

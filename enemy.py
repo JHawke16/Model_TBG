@@ -7,8 +7,8 @@ class Enemy:
 
     def __init__(self, name, health, exp, level, speed, gold, weapon=None, skills=None, difficulty=None):
         self.name = name
-        self.health = health
-        self.max_health = health  # Setting max_health equal to initial health
+        self.health = difficulty.health_scaler(health) if difficulty else health
+        self.max_health = self.health  # Setting max_health equal to initial health
         self.exp = exp
         self.level = level
         self.speed = speed
@@ -31,7 +31,7 @@ class Enemy:
             selected_skill = choice(self.skills)  # Randomly choose a skill
             if self.weapon.energy >= selected_skill.energy:
                 self.weapon.energy -= selected_skill.energy
-                damage = round(self.difficulty.damage_scaler(selected_skill.damage))
+                damage = round(self.difficulty.skill_damage_scaler(selected_skill.damage))
                 print(
                     f'\n{self.name} uses {selected_skill.name} for {damage} damage, costing {selected_skill.energy} energy')
                 return damage
