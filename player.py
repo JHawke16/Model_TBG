@@ -1,7 +1,7 @@
 import random
+from inventory import Inventory
 
 class Player:
-
     def __init__(self, name, health, base_exp, level, gold, speed, weapon=None, skills=None):
         self.name = name
         self.base_health = health
@@ -14,6 +14,7 @@ class Player:
         self.speed = speed
         self.weapon = weapon
         self.skills = skills if skills else []
+        self.inventory = Inventory()  # New inventory attribute
         self.is_defending = False  # Attribute to track defending state
 
     def attack(self):
@@ -63,7 +64,7 @@ class Player:
             damage -= self.weapon.defense  # Apply defense reduction
             damage = max(damage, 0)  # Ensure damage doesn't go below 0
         self.health -= damage
-        print(f'\n{self.name} Remaining Health: {self.health}')
+        print(f'\n{self.name} took {damage} damage, Remaining Health: {self.health}')
         self.check_alive()
 
     def check_alive(self):
@@ -86,6 +87,8 @@ class Player:
             self.required_exp = self.level * 10
             self.max_health = self.base_health + ((self.level - 1) * 5)
             self.health = self.max_health  # Set current health to max health
+            if self.weapon:
+                self.weapon.energy = self.weapon.max_energy  # Reset weapon energy on level up
             print(f'{self.name} Levels up!')
             print(f'{self.name} Max Health: {self.max_health} HP')
         check_level = self.required_exp - self.base_exp
@@ -99,6 +102,9 @@ class Player:
         if self.weapon:
             self.weapon.energy = self.weapon.max_energy
 
+    def reset_defense(self):
+        self.is_defending = False
+
     def defend(self):
         self.is_defending = True
         print(f'{self.name} is defending, reducing incoming damage by {self.weapon.defense}')
@@ -109,4 +115,19 @@ class Player:
             return True
         else:
             print(f'{self.name} failed to flee.')
+            return False
+
+    def exit_defend(self):
+        self.is_defending = False
+
+    # Update the use_item method to call exit_defend after using an item
+    def use_item(self, item_name):
+        item = self.inventory.get_item(item_name)
+        if item:
+            item.use(self)
+            self.inventory.remove_item(item)
+            self.exit_defend()  # Exit defending state after using an item
+            return True
+        else:
+            print(f'Cannot use {item_name}.')
             return False

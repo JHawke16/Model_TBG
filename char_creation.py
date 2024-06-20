@@ -9,28 +9,28 @@ class CharCreation:
         class_configurations = {
             '1': {
                 'class_name': 'Warrior',
-                'health': 30,
+                'health': 50,
                 'speed': 10,
                 'weapon': 'sword',
                 'skills': ['slash', 'swing', 'stab']
             },
             '2': {
                 'class_name': 'Rogue',
-                'health': 20,
+                'health': 30,
                 'speed': 20,
                 'weapon': 'dagger',
                 'skills': ['backstab', 'silent_strike', 'sap']
             },
             '3': {
                 'class_name': 'Mage',
-                'health': 15,
+                'health': 25,
                 'speed': 7,
                 'weapon': 'staff',
                 'skills': ['fireball', 'flames', 'magma', 'blaze']
             },
             '4': {
                 'class_name': 'Commoner',
-                'health': 12,
+                'health': 15,
                 'speed': 5,
                 'weapon': 'club',
                 'skills': ['bash', 'whack']

@@ -2,7 +2,6 @@ from random import choice
 
 
 class Battle:
-
     def __init__(self, player, enemies, difficulty):
         self.player = player
         self.enemies = enemies if isinstance(enemies, list) else [enemies]
@@ -11,6 +10,9 @@ class Battle:
         self.previous_player_action = None
         self.previous_enemy_action = None
         self.battle_log = []
+
+    def start_battle(self):
+        self.battle_flow()
 
     def get_action_order(self):
         combatants = [('player', self.player)] + [('enemy', enemy) for enemy in self.enemies]
@@ -75,7 +77,7 @@ class Battle:
         valid_action_taken = False
         action = None
         while not valid_action_taken:
-            print('Choose an action:\n1. Attack\n2. Skills\n3. Defend\n4. Flee\n')
+            print('Choose an action:\n1. Attack\n2. Skills\n3. Defend\n4. Flee\n5. Use Item\n')
             p_choice = input('Choice: ')
 
             if p_choice in ['1', '2']:  # Attack or Skills
@@ -104,6 +106,10 @@ class Battle:
                     return action  # End the battle if the player successfully flees
                 action = 'flee'
                 valid_action_taken = True
+            elif p_choice == '5':  # Use Item
+                if self.use_item():
+                    action = 'use_item'
+                    valid_action_taken = True
 
         return action
 
@@ -153,8 +159,42 @@ class Battle:
                 exp_dropped = enemy.drop_exp()
                 self.player.gain_gold(gold_dropped)
                 self.player.gain_exp(exp_dropped)
+                dropped_item = enemy.drop_item()
+                if dropped_item:
+                    self.player.inventory.add_item(dropped_item)
 
         self.enemies = [enemy for enemy in self.enemies if enemy.check_alive()]
 
-    def start_battle(self):
-        self.battle_flow()
+    def use_item(self):
+        if self.player.inventory.is_empty():
+            print("No items in inventory.")
+            return False  # Return False to indicate no action was taken
+
+        print("Choose an item to use:")
+        self.player.inventory.display_items()
+
+        item_choices = {i + 1: item for i, item in enumerate(self.player.inventory.items)}
+        for number, item in item_choices.items():
+            print(f"{number}. {item.name}")
+
+        item_choice = input("Item number: ")
+        try:
+            item_choice = int(item_choice)
+            if item_choice in item_choices:
+                item_name = item_choices[item_choice].name
+                if self.player.use_item(item_name):
+                    print(f'\n{self.player.name} used {item_name}.')
+                    print(f'{self.player.name} Health: {self.player.health}')
+                    if self.player.weapon:
+                        print(f'Energy Remaining: {self.player.weapon.energy}\n')
+                    self.player.reset_defense()  # Reset defending state after using an item
+                    return True  # Return True to indicate an action was taken
+                else:
+                    print(f'Cannot use {item_name}.')
+            else:
+                print("Invalid choice.")
+        except ValueError:
+            print("Please enter a valid number.")
+        return False  # Return False if no valid action was taken
+
+
