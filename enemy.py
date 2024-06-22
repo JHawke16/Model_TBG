@@ -6,7 +6,7 @@ from difficulty import Difficulty
 class Enemy:
     def __init__(self, name, health, exp, level, speed, gold, weapon=None, skills=None, difficulty=None, drop_items=None):
         self.name = name
-        self.health = difficulty.health_scaler(health) if difficulty else health
+        self.health = round(difficulty.health_scaler(health)) if difficulty else health
         self.max_health = self.health  # Setting max_health equal to initial health
         self.exp = exp
         self.level = level
@@ -67,10 +67,6 @@ class Enemy:
             return choice(self.drop_items)
         return None
 
-    def defend(self):
-        self.is_defending = True
-        print(f'{self.name} is defending, reducing incoming damage by {self.weapon.defense}')
-
     def flee(self):
         if self.health / self.max_health < 0.15 and random.random() < 0.2:  # 15% health and 20% flee chance
             print(f'{self.name} successfully flees the battle!')
@@ -82,3 +78,6 @@ class Enemy:
     def reset_defense(self):
         self.is_defending = False
 
+    def defend(self):
+        self.is_defending = True
+        print(f'{self.name} is defending, reducing incoming damage by {self.weapon.defense}')

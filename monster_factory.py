@@ -16,7 +16,7 @@ class MonsterFactory:
 
         w_bear = WeaponFactory.create_weapon('swipe')
         s_bear = SkillFactory.create_skills(['bite'])
-        i_bear = [ItemFactory.create_item('potion')]
+        i_bear = [ItemFactory.create_item('mana_potion')]
 
         w_goblin = WeaponFactory.create_weapon('dagger')
         s_goblin = SkillFactory.create_skills(['slash', 'stab'])
@@ -24,11 +24,11 @@ class MonsterFactory:
 
         w_orc = WeaponFactory.create_weapon('club')
         s_orc = SkillFactory.create_skills(['bash'])
-        i_orc = [ItemFactory.create_item('potion')]
+        i_orc = [ItemFactory.create_item('mana_potion')]
 
         w_troll = WeaponFactory.create_weapon('club')
         s_troll = SkillFactory.create_skills(['bash', 'whack'])
-        i_troll = [ItemFactory.create_item('potion')]
+        i_troll = [ItemFactory.create_item('elixir')]
 
         basic_monster = {
             'wolf': Enemy('Wolf', 10, 5, 1, 6, 5, w_wolf, s_wolf, difficulty, i_wolf),

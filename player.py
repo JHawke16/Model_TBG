@@ -1,6 +1,7 @@
 import random
 from inventory import Inventory
 
+
 class Player:
     def __init__(self, name, health, base_exp, level, gold, speed, weapon=None, skills=None):
         self.name = name
@@ -14,7 +15,7 @@ class Player:
         self.speed = speed
         self.weapon = weapon
         self.skills = skills if skills else []
-        self.inventory = Inventory()  # New inventory attribute
+        self.inventory = Inventory()
         self.is_defending = False  # Attribute to track defending state
 
     def attack(self):
@@ -43,8 +44,8 @@ class Player:
                         if self.weapon.energy >= selected_skill.energy:
                             self.weapon.energy -= selected_skill.energy
                             print(
-                                f'\n{self.name} uses {selected_skill.name} for {selected_skill.damage} damage, '
-                                f'costing {selected_skill.energy} energy')
+                                f'\n{self.name} uses {selected_skill.name} for {selected_skill.damage}'
+                                f' damage, costing {selected_skill.energy} energy')
                             print(f'Remaining Weapon Energy: {self.weapon.energy}')
                             return selected_skill.damage
                         else:
@@ -120,7 +121,6 @@ class Player:
     def exit_defend(self):
         self.is_defending = False
 
-    # Update the use_item method to call exit_defend after using an item
     def use_item(self, item_name):
         item = self.inventory.get_item(item_name)
         if item:

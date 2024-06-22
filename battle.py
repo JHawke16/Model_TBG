@@ -59,12 +59,17 @@ class Battle:
                     self.previous_enemy_action = action
                     self.log_battle_data(combatant, action)
 
-                if not self.player.check_alive():
-                    print("\n=======================")
-                    print("    Battle Over. You were defeated.")
-                    print("=======================")
-                    self.log_battle_data(combatant, 'player_defeated')
-                    return
+                    if not self.player.check_alive():
+                        print("\n=======================")
+                        print("    Battle Over. You were defeated.")
+                        print("=======================")
+                        self.log_battle_data(combatant, 'player_defeated')
+                        return
+
+            # Reset defense state after each round
+            self.player.reset_defense()
+            for enemy in self.enemies:
+                enemy.reset_defense()
 
             self.handle_defeated_enemies()
 
@@ -107,9 +112,10 @@ class Battle:
                 action = 'flee'
                 valid_action_taken = True
             elif p_choice == '5':  # Use Item
-                if self.use_item():
-                    action = 'use_item'
-                    valid_action_taken = True
+                if not self.use_item():
+                    continue  # If no item is used, continue to ask for action
+                action = 'use_item'
+                valid_action_taken = True
 
         return action
 
@@ -135,7 +141,12 @@ class Battle:
                     self.enemies.remove(enemy)
                     return 'flee'
 
-            action_choice = choice(['attack', 'skill_attack', 'defend'])
+            # Check if the enemy is faster than the player before deciding to defend
+            if enemy.speed > self.player.speed:
+                action_choice = choice(['attack', 'skill_attack', 'defend'])
+            else:
+                action_choice = choice(['attack', 'skill_attack'])
+
             action = None
             if action_choice == 'attack':
                 damage = enemy.attack()
@@ -187,7 +198,6 @@ class Battle:
                     print(f'{self.player.name} Health: {self.player.health}')
                     if self.player.weapon:
                         print(f'Energy Remaining: {self.player.weapon.energy}\n')
-                    self.player.reset_defense()  # Reset defending state after using an item
                     return True  # Return True to indicate an action was taken
                 else:
                     print(f'Cannot use {item_name}.')
@@ -196,5 +206,3 @@ class Battle:
         except ValueError:
             print("Please enter a valid number.")
         return False  # Return False if no valid action was taken
-
-

@@ -16,7 +16,7 @@ def potion_use(player):
 
 def elixir_use(player):
     player.health += 5  # Heals 5 health points
-    player.weapon.energy += 5 # Restores 10 energy points
+    player.weapon.energy += 5  # Restores 5 energy points
     player.health = min(player.max_health, player.health)  # Ensure health does not exceed max health
     print(f'{player.name} used an elixir and gained 50 health points.')
 
