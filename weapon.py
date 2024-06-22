@@ -1,9 +1,7 @@
 class Weapon:
-
-    def __init__(self, name, damage, defense, energy, value):
+    def __init__(self, name, damage, energy, max_energy, defense):
         self.name = name
         self.damage = damage
-        self.defense = defense
         self.energy = energy
-        self.max_energy = energy
-        self.value = value
+        self.max_energy = max_energy
+        self.defense = defense

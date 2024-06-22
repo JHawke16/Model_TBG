@@ -131,3 +131,16 @@ class Player:
         else:
             print(f'Cannot use {item_name}.')
             return False
+
+    def heal(self, amount):
+        self.health += amount
+        self.health = min(self.max_health, self.health)
+        print(f'{self.name} healed for {amount} health points. Current health: {self.health}/{self.max_health}')
+
+    def restore_energy(self, amount):
+        if self.weapon:
+            self.weapon.energy += amount
+            self.weapon.energy = min(self.weapon.max_energy, self.weapon.energy)
+            print(
+                f'{self.name} restored {amount} energy points. '
+                f'Current energy: {self.weapon.energy}/{self.weapon.max_energy}')

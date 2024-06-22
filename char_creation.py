@@ -56,8 +56,8 @@ class CharCreation:
                 if choice_confirm.lower() == 'y':
                     print(f'\n{config["class_name"]} Selected!')
                     p_name = input('Please enter a name for your character\nName: ')
-                    p_skills = SkillFactory.create_skills(config['skills'])
-                    p_weapon = WeaponFactory.create_weapon(config['weapon'])
+                    p_skills = SkillFactory.create_skills(config['skills'], 'basic')
+                    p_weapon = WeaponFactory.create_weapon(config['weapon'], 'basic')
                     player = Player(p_name, config['health'], 0, 1, 0, config['speed'], p_weapon, p_skills)
                     print('\nStarting Tutorial Battle\n')
                     return player
@@ -65,4 +65,3 @@ class CharCreation:
                     print('Returning to character selection')
             else:
                 print('Invalid choice, please select a valid class.')
-

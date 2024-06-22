@@ -4,38 +4,38 @@ from skills import Skills
 class SkillFactory:
 
     @staticmethod
-    def create_skills(skill_types):
-        # Although player classes can start with these skills, they can be given to any enemy as well
+    def create_skills(skill_types, rarity):
         all_skills = {
-            # Starting warrior skills
-            'slash': Skills('Slash', 15, 4),
-            'swing': Skills('Swing', 12, 3),
-            'stab': Skills('Stab', 10, 2),
-
-            # Starting Rogue skills
-            'backstab': Skills('Backstab', 15, 2),
-            'silent_strike': Skills('Silent Strike', 12, 1),
-            'sap': Skills('Sap', 10, 0),
-
-            # Starting Mage skills
-            'fireball': Skills('Fireball', 20, 5),
-            'flames': Skills('Flames', 15, 3),
-            'magma': Skills('Magma', 12, 2),
-            'blaze': Skills('Blaze', 17, 4),
-
-            # Starting Commoner Skills
-            'bash': Skills('Bash', 7, 1),
-            'whack': Skills('Whack', 7, 1),
-
-            # Basic Enemy skills
-            'bite': Skills('Bite', 12, 1)
+            'basic': {
+                'slash': Skills('Slash', 15, 4),
+                'swing': Skills('Swing', 13, 3),
+                'stab': Skills('Stab', 12, 2),
+                'backstab': Skills('Backstab', 15, 2),
+                'silent_strike': Skills('Silent Strike', 12, 1),
+                'sap': Skills('Sap', 10, 0),
+                'fireball': Skills('Fireball', 20, 5),
+                'flames': Skills('Flames', 15, 3),
+                'magma': Skills('Magma', 12, 2),
+                'blaze': Skills('Blaze', 17, 4),
+                'bash': Skills('Bash', 7, 1),
+                'whack': Skills('Whack', 7, 1),
+                'bite': Skills('Bite', 12, 1)
+            },
+            'rare': {
+                'slash': Skills('Power Slash', 25, 6),
+                'swing': Skills('Heavy Swing', 20, 5),
+                'stab': Skills('Deep Stab', 18, 4),
+                'fireball': Skills('Inferno Fireball', 30, 7),
+                'blaze': Skills('Firestorm', 25, 6)
+            }
+            # Add more rarities as needed
         }
 
         skills_to_return = []
         for skill_type in skill_types:
-            if skill_type in all_skills:
-                skills_to_return.append(all_skills[skill_type])
+            if rarity in all_skills and skill_type in all_skills[rarity]:
+                skills_to_return.append(all_skills[rarity][skill_type])
             else:
-                raise ValueError(f'Unknown skill type: {skill_type}')
+                raise ValueError(f'Unknown skill type or rarity: {skill_type}, {rarity}')
 
         return skills_to_return

@@ -26,7 +26,10 @@ class GameLoop:
 
     def start_tutorial_battle(self, player):
         num_enemies = randint(2, 4)
-        enemies = MonsterFactory.create_random_monsters(num_enemies, self.difficulty)
+        # Define level and rarity for tutorial monsters
+        level = 1
+        rarity = 'basic'
+        enemies = MonsterFactory.create_random_monsters(num_enemies, level, rarity, self.difficulty)
         battle = BattleFactory.create_battle(player, enemies, self.difficulty)
         battle.start_battle()
 
