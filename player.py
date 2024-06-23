@@ -1,5 +1,6 @@
 import random
 from inventory import Inventory
+# from party_member import PartyMember
 
 
 class Player:
@@ -16,7 +17,8 @@ class Player:
         self.weapon = weapon
         self.skills = skills if skills else []
         self.inventory = Inventory()
-        self.is_defending = False  # Attribute to track defending state
+        self.party_members = []  # Initialize party members list
+        self.is_defending = False
 
     def attack(self):
         if self.weapon:
@@ -26,7 +28,7 @@ class Player:
             return 0
 
     def skill_attack(self):
-        while True:  # Keep asking until a valid skill is chosen or the user decides to go back.
+        while True:
             if self.skills and self.weapon:
                 print(f'\nEnergy Remaining: {self.weapon.energy}')
                 print("\nAvailable skills:")
@@ -34,7 +36,7 @@ class Player:
                     print(f"{index}. {skill.name} (Damage: {skill.damage}, Energy Cost: {skill.energy})")
 
                 choice = input('Choose a skill by number (or type "back" to choose another action): ')
-                if choice.lower() == "back":  # Allow the user to go back and choose another action.
+                if choice.lower() == "back":
                     return None
 
                 try:
@@ -62,8 +64,8 @@ class Player:
 
     def take_damage(self, damage):
         if self.is_defending and self.weapon:
-            damage -= self.weapon.defense  # Apply defense reduction
-            damage = max(damage, 0)  # Ensure damage doesn't go below 0
+            damage -= self.weapon.defense
+            damage = max(damage, 0)
         self.health -= damage
         print(f'\n{self.name} took {damage} damage, Remaining Health: {self.health}')
         self.check_alive()
@@ -80,6 +82,7 @@ class Player:
         self.level_up()
 
     def level_up(self):
+        leveled_up = False
         while self.base_exp >= self.required_exp:
             self.level += 1
             self.speed += 2
@@ -87,19 +90,21 @@ class Player:
             self.base_exp = carry_over
             self.required_exp = self.level * 10
             self.max_health = self.base_health + ((self.level - 1) * 5)
-            self.health = self.max_health  # Set current health to max health
+            self.health = self.max_health
             if self.weapon:
-                self.weapon.energy = self.weapon.max_energy  # Reset weapon energy on level up
+                self.weapon.energy = self.weapon.max_energy
             print(f'{self.name} Levels up!')
             print(f'{self.name} Max Health: {self.max_health} HP')
-        check_level = self.required_exp - self.base_exp
-        print(f'\n{self.name} Level: {self.level}')
-        print(f'Current exp: {self.base_exp}')
-        print(f'Exp required for level up: {check_level}\n')
+            leveled_up = True
+        if leveled_up:
+            check_level = self.required_exp - self.base_exp
+            print(f'\n{self.name} Level: {self.level}')
+            print(f'Current exp: {self.base_exp}')
+            print(f'Exp required for level up: {check_level}\n')
 
     def reset_stats(self):
         self.health = self.max_health
-        self.is_defending = False  # Reset defending state
+        self.is_defending = False
         if self.weapon:
             self.weapon.energy = self.weapon.max_energy
 
@@ -111,7 +116,7 @@ class Player:
         print(f'{self.name} is defending, reducing incoming damage by {self.weapon.defense}')
 
     def flee(self):
-        if random.random() < 0.2:  # 20% chance to flee successfully
+        if random.random() < 0.2:
             print(f'{self.name} successfully flees the battle!')
             return True
         else:
@@ -126,7 +131,7 @@ class Player:
         if item:
             item.use(self)
             self.inventory.remove_item(item)
-            self.exit_defend()  # Exit defending state after using an item
+            self.exit_defend()
             return True
         else:
             print(f'Cannot use {item_name}.')
@@ -135,7 +140,7 @@ class Player:
     def heal(self, amount):
         self.health += amount
         self.health = min(self.max_health, self.health)
-        print(f'{self.name} healed for {amount} health points. Current health: {self.health}/{self.max_health}')
+        print(f'{self.name} healed for {amount} health points. Current health: {self.health}')
 
     def restore_energy(self, amount):
         if self.weapon:
@@ -143,4 +148,35 @@ class Player:
             self.weapon.energy = min(self.weapon.max_energy, self.weapon.energy)
             print(
                 f'{self.name} restored {amount} energy points. '
-                f'Current energy: {self.weapon.energy}/{self.weapon.max_energy}')
+                f'Current energy: {self.weapon.energy}')
+
+    def add_party_member(self, party_member):
+        self.party_members.append(party_member)
+        print(f'{party_member.name} has joined your party!')
+
+    def view_party_members(self):
+        if not self.party_members:
+            print("No party members in your party.")
+        else:
+            print("Party members:")
+            for member in self.party_members:
+                exp_to_next_level = member.required_exp - member.base_exp
+                print(f"- {member.name} (Level {member.level})")
+                print(f"  Health: {member.health}/{member.max_health}")
+                print(f"  Exp: {member.base_exp}/{member.required_exp}")
+                print(f"  Exp to next level: {exp_to_next_level}")
+                print(f"  Speed: {member.speed}")
+                if member.weapon:
+                    print(f"  Weapon: {member.weapon.name} (Damage: {member.weapon.damage}, Defense: {member.weapon.defense}, "
+                          f"Energy: {member.weapon.energy}/{member.weapon.max_energy})")
+                if member.skills:
+                    print("  Skills:")
+                    for skill in member.skills:
+                        print(f"- {skill.name} (Damage: {skill.damage}, Energy Cost: {skill.energy})")
+
+    def distribute_exp(self, exp):
+        total_members = len(self.party_members) + 1  # Include player
+        exp_per_member = exp // total_members
+        self.gain_exp(exp_per_member)
+        for member in self.party_members:
+            member.gain_exp(exp_per_member)

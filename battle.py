@@ -1,4 +1,6 @@
 from random import choice
+from party_member import PartyMember
+from enemy import Enemy  # Make sure the Enemy class is imported
 
 
 class Battle:
@@ -15,31 +17,23 @@ class Battle:
         self.battle_flow()
 
     def get_action_order(self):
-        combatants = [('player', self.player)] + [('enemy', enemy) for enemy in self.enemies]
+        combatants = [('player', self.player)] + [
+            (f'party_{i}', member) for i, member in enumerate(self.player.party_members) if member.check_alive()
+        ] + [('enemy', enemy) for enemy in self.enemies if enemy.check_alive()]
         combatants.sort(key=lambda x: x[1].speed, reverse=True)
         return combatants
 
     def log_battle_data(self, combatant, action):
         data = {
             'round_number': self.round_number,
-            'difficulty': self.difficulty.value,
-            'player_health': self.player.health,
-            'player_level': self.player.level,
-            'player_action': self.previous_player_action,
-            'player_energy': self.player.weapon.energy if self.player.weapon else None,
-            'player_weapon_damage': self.player.weapon.damage if self.player.weapon else None,
-            'player_weapon_defense': self.player.weapon.defense if self.player.weapon else None,
-            'player_speed': self.player.speed,
-            'enemy_health': combatant.health,
-            'enemy_level': combatant.level,
-            'enemy_action': self.previous_enemy_action,
-            'enemy_energy': combatant.weapon.energy if combatant.weapon else None,
-            'enemy_weapon_damage': combatant.weapon.damage if combatant.weapon else None,
-            'enemy_weapon_defense': combatant.weapon.defense if combatant.weapon else None,
-            'enemy_speed': combatant.speed,
+            'combatant_name': combatant.name,
+            'combatant_type': 'player' if combatant == self.player else 'enemy' if isinstance(combatant, Enemy) else 'party_member',
+            'combatant_health': combatant.health,
+            'combatant_energy': combatant.weapon.energy if combatant.weapon else None,
             'action_taken': action
         }
         self.battle_log.append(data)
+        # print(f"Log: {data}")  # Print log for debugging
 
     def battle_flow(self):
         print("\n=======================")
@@ -50,28 +44,39 @@ class Battle:
 
         while self.player.check_alive() and any(enemy.check_alive() for enemy in self.enemies):
             self.round_number += 1
-            for combatant_type, combatant in self.get_action_order():
-                if combatant_type == 'player' and combatant.check_alive():
-                    action = self.player_action(combatant)
-                    self.previous_player_action = action
-                elif combatant_type == 'enemy' and combatant.check_alive():
-                    action = self.enemy_action(combatant)
-                    self.previous_enemy_action = action
-                    self.log_battle_data(combatant, action)
+            print(f"\n--- Round {self.round_number} ---")
+            action_order = self.get_action_order()
+            combatant = None
 
-                if not self.player.check_alive():
-                    print("\n=======================")
-                    print("    Battle Over. You were defeated.")
-                    print("=======================")
-                    self.log_battle_data(combatant, 'player_defeated')
-                    return
+            for combatant_type, combatant in action_order:
+                if combatant.check_alive():
+                    if combatant_type == 'player':
+                        action = self.player_action(combatant)
+                        self.previous_player_action = action
+                    elif 'party' in combatant_type:
+                        action = self.party_member_action(combatant)
+                        self.previous_player_action = action
+                    elif combatant_type == 'enemy':
+                        action = self.enemy_action(combatant)
+                        self.previous_enemy_action = action
+                        self.log_battle_data(combatant, action)
 
             self.handle_defeated_enemies()
+            self.check_level_up()
+
+            if not self.player.check_alive():
+                print("\n=======================")
+                print("    Battle Over. You were defeated.")
+                print("=======================")
+                self.log_battle_data(combatant, 'player_defeated')
+                return
 
         print("\n=======================")
         print(" Battle Over. All enemies defeated!")
         print("=======================")
         self.player.reset_stats()
+        for member in self.player.party_members:
+            member.reset_stats()
 
     def player_action(self, player):
         valid_action_taken = False
@@ -80,38 +85,66 @@ class Battle:
             print('Choose an action:\n1. Attack\n2. Skills\n3. Defend\n4. Flee\n5. Use Item\n')
             p_choice = input('Choice: ')
 
-            if p_choice in ['1', '2']:  # Attack or Skills
+            if p_choice in ['1', '2']:
                 target_enemy = self.select_enemy_target()
                 if target_enemy:
-                    if p_choice == '1':  # Attack
+                    if p_choice == '1':
+                        print(f'\n{player.name} targets {target_enemy.name} with an attack.')
                         damage = player.attack()
                         target_enemy.take_damage(damage)
                         action = 'attack'
                         valid_action_taken = True
 
-                    elif p_choice == '2':  # Skills
+                    elif p_choice == '2':
+                        print(f'\n{player.name} targets {target_enemy.name} with a skill attack.')
                         skill_damage = player.skill_attack()
                         if skill_damage is not None:
                             target_enemy.take_damage(skill_damage)
                             action = 'skill'
                             valid_action_taken = True
 
-            elif p_choice == '3':  # Defend
+            elif p_choice == '3':
                 player.defend()
                 action = 'defend'
                 valid_action_taken = True
-            elif p_choice == '4':  # Flee
+            elif p_choice == '4':
                 if player.flee():
                     action = 'flee'
-                    return action  # End the battle if the player successfully flees
+                    return action
                 action = 'flee'
                 valid_action_taken = True
-            elif p_choice == '5':  # Use Item
+            elif p_choice == '5':
                 if self.use_item():
                     action = 'use_item'
                     valid_action_taken = True
 
         return action
+
+    def party_member_action(self, party_member):
+        living_enemies = [enemy for enemy in self.enemies if enemy.check_alive()]
+        if living_enemies:
+            skills_with_matching_weapon = [skill for skill in party_member.skills if party_member.weapon.weapon_type in skill.required_weapon_types]
+            if skills_with_matching_weapon:
+                action_choice = choice(['skill_attack'] * 3 + ['attack'])  # Prioritize skill attack
+            else:
+                action_choice = 'attack'
+
+            if action_choice == 'attack':
+                target_enemy = choice(living_enemies)
+                print(f'\n{party_member.name} targets {target_enemy.name} with an attack.')
+                damage = party_member.attack()
+                target_enemy.take_damage(damage)
+                self.log_battle_data(party_member, 'attack')
+                return 'attack'
+            elif action_choice == 'skill_attack':
+                target_enemy = choice(living_enemies)
+                print(f'\n{party_member.name} targets {target_enemy.name} with a skill attack.')
+                skill_damage = party_member.skill_attack()
+                if skill_damage is not None:
+                    target_enemy.take_damage(skill_damage)
+                    self.log_battle_data(party_member, 'skill_attack')
+                    return 'skill_attack'
+        return 'none'
 
     def select_enemy_target(self):
         print("\nChoose your target:")
@@ -137,38 +170,43 @@ class Battle:
 
             action_choice = choice(['attack', 'skill_attack', 'defend'])
             action = None
+            target = choice([self.player] + [member for member in self.player.party_members if member.check_alive()])
+
             if action_choice == 'attack':
+                print(f'\n{enemy.name} targets {target.name} with an attack.')
                 damage = enemy.attack()
-                self.player.take_damage(damage)
+                target.take_damage(damage)
                 action = 'attack'
             elif action_choice == 'skill_attack':
+                print(f'\n{enemy.name} targets {target.name} with a skill attack.')
                 skill_damage = enemy.skill_attack()
-                self.player.take_damage(skill_damage)
+                target.take_damage(skill_damage)
                 action = 'skill_attack'
-            elif action_choice == 'defend':
+            elif action_choice == 'defend' and enemy.speed > target.speed:
                 enemy.defend()
                 action = 'defend'
-            if not self.player.check_alive():
-                print('Battle Over')
+            if isinstance(target, PartyMember) and not target.check_alive():
+                self.handle_party_member_knockout(target)
+            self.log_battle_data(enemy, action)
             return action
 
     def handle_defeated_enemies(self):
-        for enemy in self.enemies:
-            if not enemy.check_alive():
-                gold_dropped = enemy.drop_gold()
-                exp_dropped = enemy.drop_exp()
-                self.player.gain_gold(gold_dropped)
-                self.player.gain_exp(exp_dropped)
-                dropped_item = enemy.drop_item()
-                if dropped_item:
-                    self.player.inventory.add_item(dropped_item)
+        defeated_enemies = [enemy for enemy in self.enemies if not enemy.check_alive()]
+        for enemy in defeated_enemies:
+            gold_dropped = enemy.drop_gold()
+            exp_dropped = enemy.drop_exp()
+            self.player.gain_gold(gold_dropped)
+            self.player.distribute_exp(exp_dropped)
+            dropped_item = enemy.drop_item()
+            if dropped_item:
+                self.player.inventory.add_item(dropped_item)
 
         self.enemies = [enemy for enemy in self.enemies if enemy.check_alive()]
 
     def use_item(self):
         if self.player.inventory.is_empty():
             print("No items in inventory.")
-            return False  # Return False to indicate no action was taken
+            return False
 
         print("Choose an item to use:")
         self.player.inventory.display_items()
@@ -187,11 +225,20 @@ class Battle:
                     print(f'{self.player.name} Health: {self.player.health}')
                     if self.player.weapon:
                         print(f'Energy Remaining: {self.player.weapon.energy}\n')
-                    return True  # Return True to indicate an action was taken
+                    return True
                 else:
                     print(f'Cannot use {item_name}.')
             else:
                 print("Invalid choice.")
         except ValueError:
             print("Please enter a valid number.")
-        return False  # Return False if no valid action was taken
+        return False
+
+    def handle_party_member_knockout(self, member):
+        member.health = 0  # Ensure the health is 0
+        print(f'{member.name} has been knocked out and cannot participate in the rest of the battle.')
+
+    def check_level_up(self):
+        self.player.level_up()
+        for member in self.player.party_members:
+            member.level_up()

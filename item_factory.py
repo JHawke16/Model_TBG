@@ -9,7 +9,7 @@ class ItemFactory:
             'basic': {
                 'potion': Item('Health Potion', lambda player: player.heal(20), 20),
                 'mana_potion': Item('Mana Potion', lambda player: player.restore_energy(20), 30),
-                'elixir': Item('Elixir', lambda player: (player.heal(30), player.restore_energy(30)), 50)
+                'elixir': Item('Elixir', lambda player: (player.heal(30), player.restore_energy(10)), 50)
             },
             'rare': {
                 'potion': Item('Greater Health Potion', lambda player: player.heal(50), 50),

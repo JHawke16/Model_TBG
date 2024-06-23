@@ -7,18 +7,18 @@ class WeaponFactory:
     def create_weapon(weapon_type, rarity):
         weapons = {
             'basic': {
-                'sword': Weapon('Sword', 10, 4, 6, 10),
-                'dagger': Weapon('Dagger', 6, 2, 10, 10),
-                'staff': Weapon('Staff', 3, 5, 25, 10),
-                'club': Weapon('Club', 5, 2, 2, 5),
-                'claw': Weapon('Claw', 5, 1, 1, 0),
-                'swipe': Weapon('Swipe', 8, 2, 3, 0)
+                'sword': Weapon('Sword', 'sword', 10, 6, 6, 10),
+                'dagger': Weapon('Dagger', 'dagger', 6, 10, 10, 3),
+                'staff': Weapon('Staff', 'staff', 3, 25, 25, 5),
+                'club': Weapon('Club', 'club', 5, 2, 2, 5),
+                'claw': Weapon('Claw', 'claw', 5, 1, 1, 0),
+                'swipe': Weapon('Swipe', 'claw', 8, 3, 3, 0)
             },
             'rare': {
-                'sword': Weapon('Enchanted Sword', 15, 6, 8, 15),
-                'dagger': Weapon('Poison Dagger', 10, 4, 12, 15),
-                'staff': Weapon('Wizard Staff', 5, 7, 30, 15),
-                'club': Weapon('War Club', 7, 3, 4, 8)
+                'sword': Weapon('Enchanted Sword', 'sword', 15, 6, 8, 15),
+                'dagger': Weapon('Poison Dagger', 'dagger', 10, 4, 12, 15),
+                'staff': Weapon('Wizard Staff', 'staff', 5, 7, 30, 15),
+                'club': Weapon('War Club', 'club', 15, 3, 4, 8)
             }
             # Add more rarities as needed
         }
@@ -27,3 +27,4 @@ class WeaponFactory:
             return weapons[rarity][weapon_type]
         else:
             raise ValueError(f'Unknown weapon type or rarity: {weapon_type}, {rarity}')
+

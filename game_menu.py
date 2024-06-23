@@ -10,9 +10,10 @@ class GameMenu:
             print("2. Save Game")
             print("3. View Items")
             print("4. View Stats")
-            print("5. View Quests")
-            print("6. Change Difficulty")
-            print("7. Exit")
+            print("5. View Party Members")
+            print("6. View Quests")
+            print("7. Change Difficulty")
+            print("8. Exit")
             choice = input("Choose an option: ")
 
             if choice == '1':
@@ -24,10 +25,12 @@ class GameMenu:
             elif choice == '4':
                 return 'view_stats'
             elif choice == '5':
-                return 'view_quests'
+                return 'view_party_members'
             elif choice == '6':
-                return 'change_difficulty'
+                return 'view_quests'
             elif choice == '7':
+                return 'change_difficulty'
+            elif choice == '8':
                 return 'exit'
             else:
                 print("Invalid choice. Please select a valid option.")
@@ -55,14 +58,21 @@ class GameMenu:
             for skill in self.player.skills:
                 print(f"  - {skill.name} (Damage: {skill.damage}, Energy Cost: {skill.energy})")
 
+    def view_party_members(self):
+        print("\nViewing party members:")
+        self.player.view_party_members()
+
     def view_quests(self):
         print("\nViewing quests... (Not implemented yet)")
 
     def change_difficulty(self):
         print("\nCurrent difficulty level:", self.game_loop.get_difficulty())
-        new_difficulty = int(input("Enter new difficulty level: "))
-        self.game_loop.set_difficulty(new_difficulty)
-        print(f"Difficulty level changed to {new_difficulty}")
+        try:
+            new_difficulty = int(input("Enter new difficulty level: "))
+            self.game_loop.set_difficulty(new_difficulty)
+            print(f"Difficulty level changed to {new_difficulty}")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
 
     def exit_game(self):
         print("\nExiting game")

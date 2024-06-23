@@ -51,7 +51,7 @@ class MonsterFactory:
                 'exp': 15,
                 'speed': 3,
                 'gold': 15,
-                'weapon': ('club', 'basic'),
+                'weapon': ('club', 'rare'),
                 'skills': (['bash', 'whack'], 'basic'),
                 'items': (['elixir'], 'basic')
             }
@@ -64,7 +64,8 @@ class MonsterFactory:
             skills = SkillFactory.create_skills(*config['skills'])
             items = [ItemFactory.create_item(item, rarity) for item in config['items'][0]]
 
-            return Enemy(monster_type.capitalize(), config['health'], config['exp'], level, config['speed'], config['gold'], weapon, skills, difficulty, items)
+            return Enemy(monster_type.capitalize(), config['health'], config['exp'], level, config['speed'],
+                         config['gold'], weapon, skills, difficulty, items)
         else:
             raise ValueError(f'Unknown monster type: {monster_type}')
 

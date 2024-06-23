@@ -53,7 +53,7 @@ class Enemy:
     def drop_gold(self):
         self.check_alive()
         dropped_gold = round(self.difficulty.gold_scaler(self.gold))
-        print(f'{self.name} dropped {dropped_gold} gold')
+        print(f'\n{self.name} dropped {dropped_gold} gold')
         return dropped_gold
 
     def drop_exp(self):
